@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import theme from '../styles/theme';
 import InputIconSrc from '../assets/images/icon/command-icon.png';
 import axios, { AxiosResponse } from 'axios';
-import { setDevices } from '../stores/actions';
 import { useSelector, useDispatch } from 'react-redux';
+import { deviceActions } from '../stores/reducers';
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const Container = styled.div`
 const InputBox = styled.div`
   display: flex;
   height: 50px;
-  align-items: center;
+  // align-items: center;
   justify-content: space-around;
 `;
 
@@ -75,14 +75,16 @@ const MainInput = styled.input`
 `;
 
 const Main = () => {
-  const state = useSelector<any, any>((state) => state.devReducer);
   const dispatch = useDispatch();
 
   const selectRef = useRef<HTMLSelectElement>(null);
   const [inputText, setInputText] = useState<string>('');
 
   const optionList = [
-    { order: 0, label: 'Connect', value: 'adb connect $str',
+    {
+      order: 0,
+      label: 'Connect',
+      value: 'adb connect $str',
       valid:
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
     },
@@ -121,7 +123,7 @@ const Main = () => {
         .get('http://localhost:3000/command', { params: { command } })
         .then((res: AxiosResponse) => {
           console.log(res);
-          dispatch(setDevices(res.data));
+          dispatch(deviceActions.setDevice(res.data));
         });
     }
   };

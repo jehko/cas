@@ -1,24 +1,27 @@
-import { combineReducers } from 'redux';
-import { SET_DEVICES } from './actions';
+import { createSlice } from '@reduxjs/toolkit';
 
-const STATE = {
-  devices: [],
+type device = {
+  ip: string;
+  label: string;
 };
 
-type STATE = { devices: [] | null };
-type ACTION = { type: string; payload: object | string };
-
-const devReducer = (state = STATE, action: ACTION) => {
-  switch (action.type) {
-    case SET_DEVICES:
-      return { ...state, devices: action.payload };
-    default:
-      return state;
-  }
+type initialState = {
+  deviceList: Array<device>;
 };
 
-const rootReducer = combineReducers({
-  devReducer,
+const initialState: initialState = {
+  deviceList: [],
+};
+
+const deviceSlice = createSlice({
+  name: 'device',
+  initialState,
+  reducers: {
+    setDevice(state, action) {
+      state.deviceList = action.payload.data;
+    },
+  },
 });
 
-export default rootReducer;
+export const deviceActions = deviceSlice.actions;
+export default deviceSlice.reducer;

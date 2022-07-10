@@ -1,30 +1,29 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import theme from '../styles/theme';
 import { useSelector, useDispatch } from 'react-redux';
+import { deviceState } from '../stores/store';
 
 const Container = styled.div`
-  display: flex;
-  height: 8vh;
+  display: inline-flex;
+  width: 100%;
+  height: 5rem;
   background: ${theme.primary};
+  justify-content: space-between;
 `;
 
 const Title = styled.div`
-  display: flex;
-  -webkit-box-align: center;
   align-items: center;
   color: ${theme.secondary};
-  flex-grow: 14;
   margin-left: 1rem;
 `;
 
 const ConnectedWrap = styled.div`
-  display: flex;
+  align-items: center;
   height: 3rem;
   background: white;
   border: none;
   border-radius: 20px;
-  justify-content: flex-start;
   box-shadow: 2px 2px 2px grey;
   width: 10rem;
   margin-top: 1rem;
@@ -34,24 +33,19 @@ const ConnectedWrap = styled.div`
 
 const ConnectedList = styled.select`
   width: 100%;
+  height: 100%;
   background: transparent;
   font-size: inherit;
-  padding: 0 1rem;
   border: none;
-  border-radius: 20px;
+  margin: auto;
+  padding: 0 1rem;
   &:focus {
     outline: none;
   }
 `;
 
 const Header = () => {
-  const state = useSelector<any, any>((state) => state.devReducer);
-  const dispatch = useDispatch();
-  const OPTIONS = [{ value: '', name: '' }];
-
-  useEffect(() => {
-    console.log(state);
-  });
+  const deviceList = useSelector((state: deviceState) => state.deviceReducer.deviceList);
 
   return (
     <Container>
@@ -59,7 +53,12 @@ const Header = () => {
         <h1>CAS</h1>
       </Title>
       <ConnectedWrap>
-        <ConnectedList></ConnectedList>
+        <ConnectedList>
+          <option>select device</option>
+          {deviceList.map((device) => (
+            <option key={`select-box-key-${device.ip}`}>{device.label}</option>
+          ))}
+        </ConnectedList>
       </ConnectedWrap>
     </Container>
   );
