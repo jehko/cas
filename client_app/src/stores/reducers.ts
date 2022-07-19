@@ -18,7 +18,11 @@ const deviceSlice = createSlice({
   initialState,
   reducers: {
     setDevice(state, action) {
-      state.deviceList = action.payload.data;
+      console.log(action.payload);
+      state.deviceList = [
+        ...state.deviceList,
+        { ip: action.payload.deviceIp, label: action.payload.deviceIp },
+      ];
     },
   },
 });

@@ -5,6 +5,7 @@ import InputIconSrc from '../assets/images/icon/command-icon.png';
 import axios, { AxiosResponse } from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { deviceActions } from '../stores/reducers';
+import { addDevice } from '../apis/internal';
 
 const Container = styled.div`
   display: flex;
@@ -76,9 +77,13 @@ const MainInput = styled.input`
 
 const Main = () => {
   const dispatch = useDispatch();
+  const mode = process.env.REACT_APP_MODE;
 
   const selectRef = useRef<HTMLSelectElement>(null);
-  const [inputText, setInputText] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  // const [inputText, setInputText] = useState<string>('');
+
+  console.log(mode);
 
   const optionList = [
     {
@@ -111,20 +116,16 @@ const Main = () => {
     setSelectedOption(optionList[selectedIndex]);
   };
 
-  const onInputKeyDown = (e: React.KeyboardEvent) => {
+  const onInputKeyDown = async (e: React.KeyboardEvent) => {
+    const inputText: string = inputRef.current?.value || '';
     if (e.key === 'Enter') {
       // to-do valid check, connected device check
       if (selectedOption.valid && !selectedOption.valid.test(inputText)) {
         return;
       }
       const command = selectedOption.value.replace('$str', inputText);
-      console.log(command);
-      axios
-        .get('http://localhost:3000/command', { params: { command } })
-        .then((res: AxiosResponse) => {
-          console.log(res);
-          dispatch(deviceActions.setDevice(res.data));
-        });
+      const result = await addDevice({ params: { command } });
+      console.log(result);
     }
   };
 
@@ -140,14 +141,11 @@ const Main = () => {
         </SelectWrapper>
         <InputWrapper>
           <InputIcon></InputIcon>
-          <MainInput
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={onInputKeyDown}
-          ></MainInput>
+          <MainInput ref={inputRef} onKeyDown={onInputKeyDown}></MainInput>
         </InputWrapper>
       </InputBox>
     </Container>
   );
 };
 
-export default Main;
+export default React.memo(Main);
